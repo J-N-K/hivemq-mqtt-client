@@ -38,27 +38,6 @@ value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" =
     }
 }
 
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compileClasspath
-}
-
-task javadocJar(type: Jar) {
-    group 'publishing'
-    description 'Assembles a jar archive containing the javadoc.'
-
-    from javadoc
-    classifier 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    group 'publishing'
-    description 'Assembles a jar archive containing the main sources.'
-
-    from sourceSets.main.allJava
-    classifier 'sources'
-}
-
 void addPom(MavenPublication publication) {
     publication.pom {
         name = project.readableName

@@ -18,6 +18,7 @@ description 'HiveMQ MQTT Client is a MQTT 5.0 and MQTT 3.1.1 compatible and feat
         'library with different API flavours and backpressure support'
 
 ext {
+    moduleName = 'com.hivemq.client.mqtt'
     readableName = 'HiveMQ MQTT Client'
     githubOrg = 'hivemq'
     githubRepo = 'hivemq-mqtt-client'
@@ -31,7 +32,8 @@ ext {
     prevVersion = '1.0.1'
 }
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -88,6 +90,14 @@ dependencies {
 apply from: 'publishing.gradle'
 apply from: 'japicc.gradle'
 
+jar {
+    manifest {
+        attributes(
+            'Automatic-Module-Name': project.moduleName
+        )
+    }
+}
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 shadowJar { ShadowJar shadowJar ->
@@ -112,6 +122,27 @@ shadowJar { ShadowJar shadowJar ->
     relocate 'javax.inject', shadePrefix + 'javax.inject'
 
     minimize()
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compileClasspath
+}
+
+task javadocJar(type: Jar) {
+    group 'documentation'
+    description 'Assembles a jar archive containing the javadoc.'
+
+    from javadoc
+    classifier 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    group 'build'
+    description 'Assembles a jar archive containing the main sources.'
+
+    from sourceSets.main.allJava
+    classifier 'sources'
 }
 
 license {

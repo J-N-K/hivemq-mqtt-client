@@ -7,8 +7,8 @@ ext {
     bintray_apiKey = '<api key>'
 }
 */
-if (file('bintray.gradle').exists()) {
-    apply from: 'bintray.gradle'
+if (file("${rootDir}/gradle/bintray.gradle").exists()) {
+    apply from: "${rootDir}/gradle/bintray.gradle"
 }
 
 /*
@@ -36,27 +36,6 @@ value: dummy; if ( ( test "$TRAVIS_BRANCH" = "master" || test "$TRAVIS_BRANCH" =
     if (!project.hasProperty(propName)) {
         project.ext.setProperty(propName, "${System.getenv()[propName]}")
     }
-}
-
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compileClasspath
-}
-
-task javadocJar(type: Jar) {
-    group 'publishing'
-    description 'Assembles a jar archive containing the javadoc.'
-
-    from javadoc
-    classifier 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    group 'publishing'
-    description 'Assembles a jar archive containing the main sources.'
-
-    from sourceSets.main.allJava
-    classifier 'sources'
 }
 
 void addPom(MavenPublication publication) {
@@ -124,10 +103,10 @@ bintray {
         repo = 'HiveMQ'
         name = 'hivemq-mqtt-client'
         desc = project.description
-        websiteUrl = githubUrl
-        issueTrackerUrl = githubUrl + '/issues'
-        vcsUrl = githubUrl + '.git'
-        licenses = [licenseShortName]
+        websiteUrl = project.githubUrl
+        issueTrackerUrl = project.githubUrl + '/issues'
+        vcsUrl = project.githubUrl + '.git'
+        licenses = [project.licenseShortName]
         labels = ['mqtt', 'mqtt-client', 'iot', 'internet-of-things', 'rxjava2', 'reactive-streams', 'backpressure']
         version {
             released = new Date()
@@ -140,22 +119,4 @@ bintray {
             }*/
         }
     }
-}
-
-artifactory {
-    contextUrl = 'http://oss.jfrog.org'
-    publish {
-        repository {
-            repoKey = 'oss-snapshot-local'
-            username = bintray_username
-            password = bintray_apiKey
-        }
-        defaults {
-            publications('normal', 'shaded')
-        }
-    }
-    resolve {
-        repoKey = 'jcenter'
-    }
-    clientConfig.info.setBuildNumber(System.getenv()['TRAVIS_BUILD_NUMBER'])
 }

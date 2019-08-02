@@ -94,6 +94,7 @@ allprojects {
     test {
         useJUnitPlatform()
         maxHeapSize = '4096m'
+        jvmArgs '-XX:+UseParallelGC'
     }
 }
 

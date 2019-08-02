@@ -92,8 +92,8 @@ allprojects {
     }
 
     test {
-        maxHeapSize = "2048m"
         useJUnitPlatform()
+        maxHeapSize = '4096m'
     }
 }
 
